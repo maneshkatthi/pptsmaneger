@@ -124,7 +124,7 @@ if ($ext === 'pdf') {
 </div>
 
 <footer>
-Developed by <span>Manesh Katthi</span>
+Developed by <span>Jayanth Kranathi and Nandha Alluri</span>
 </footer>
 
 <script>
