@@ -19,19 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         $filePath  = "$baseDir/$fileName";
 
         if (in_array($ext, $allowedExt)) {
-
             move_uploaded_file($_FILES['file']['tmp_name'], $filePath);
             chmod($filePath, 0644);
-
-            /* 🔥 AUTO-CONVERT PPT/PPTX → PDF */
-            if ($ext === 'ppt' || $ext === 'pptx') {
-
-                $cmd = "soffice --headless --convert-to pdf " .
-                       escapeshellarg($filePath) .
-                       " --outdir " . escapeshellarg($baseDir);
-
-                exec($cmd);
-            }
         }
     }
 }
@@ -55,7 +44,6 @@ $baseUrl = $protocol . "://" . $host . $webPath;
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* ✅ STYLES UNCHANGED */
 html,body{margin:0;min-height:100%;display:grid;place-content:center;font-family:Arial,sans-serif;background:radial-gradient(hsl(220 10% 50% / .18) 1px, transparent 0),linear-gradient(160deg,#f7f8fa,#ebf2fa);background-size:30px 30px,cover;}
 .container{width:620px;padding:36px;border-radius:30px;background:#ffffff;position:relative;z-index:1;}
 .container::before{content:"";position:absolute;inset:-24px;border-radius:inherit;background:radial-gradient(circle at 20% 20%, rgba(120,160,255,.7), transparent 55%),radial-gradient(circle at 80% 80%, rgba(190,140,255,.7), transparent 55%),radial-gradient(circle at 50% 100%, rgba(120,200,255,.5), transparent 60%);filter:blur(32px);opacity:.9;z-index:-1;animation:glowPulse 6s ease-in-out infinite;}
@@ -109,15 +97,12 @@ $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
 $encoded = rawurlencode($f);
 $fileUrl = $baseUrl . "/" . $encoded;
 
-/* View logic */
+/* 🔥 VIEW LOGIC */
 if ($ext === 'pdf') {
     $viewUrl = $fileUrl;
 } elseif ($ext === 'ppt' || $ext === 'pptx') {
-    $pdfName = pathinfo($f, PATHINFO_FILENAME) . ".pdf";
-    $pdfPath = "$baseDir/$pdfName";
-    $viewUrl = file_exists($pdfPath)
-        ? $baseUrl . "/" . rawurlencode($pdfName)
-        : $fileUrl;
+    // Open in Microsoft PowerPoint Online
+    $viewUrl = "https://view.officeapps.live.com/op/view.aspx?src=" . urlencode($fileUrl);
 } else {
     $viewUrl = $fileUrl;
 }
@@ -146,7 +131,7 @@ Developed by <span>Manesh Katthi</span>
 const input = document.getElementById('file');
 const label = document.getElementById('file-name');
 input.addEventListener('change', () => {
-label.textContent = input.files.length ? input.files[0].name : 'No file selected';
+    label.textContent = input.files.length ? input.files[0].name : 'No file selected';
 });
 </script>
 
