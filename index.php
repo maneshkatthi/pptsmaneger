@@ -218,7 +218,7 @@ footer span{
 </div>
 
 <footer>
-Developed by <span>Jayanth Kranathi and Nandha Alluri</span>
+Developed by <span>Manesh Katthi</span>
 </footer>
 
 </body>
